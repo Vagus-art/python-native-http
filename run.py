@@ -1,5 +1,5 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse
 
 def rootHandler(base : BaseHTTPRequestHandler):
     base.send_header("Content-type","text")
@@ -15,6 +15,14 @@ def echoHandler(base : BaseHTTPRequestHandler):
     args = [arg for arg in base.path.split("?")[1].split('&')]
     base.wfile.write('\n'.join(args).encode())
 
+def clientHandler(base : BaseHTTPRequestHandler):
+    '''
+    whatever
+    '''
+    base.send_header("Content-type","text")
+    base.end_headers
+    base.wfile.write(base.client_address[0].encode())
+
 routes = [{
     'path': '/',
     'handler': rootHandler
@@ -22,7 +30,12 @@ routes = [{
 {
     'path': '/echo',
     'handler': echoHandler
-}]
+},
+{
+    'path': '/client',
+    'handler': clientHandler
+}
+]
 
 class helloHandler(BaseHTTPRequestHandler):
     def do_GET(self):
